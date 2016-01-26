@@ -8,9 +8,7 @@ from wu_manber import WuManber
 # Chinese repeation
 def repeat_content(text):
     que = list(text)
-    if float(len(set(que)))/len(que) < 0.35:
-        return True
-    return False
+    return float(len(set(que)))/len(que) #0.35
 
 # Chinese & English break
 def break_check(text):
@@ -23,9 +21,9 @@ def break_check(text):
     #  findPart(u"[\u3040-\u309f]+", usample) # "unicode japanese hiragana"
     cn_punc = findPart(u"[\u3000-\u303f\ufb00-\ufffd]+", text, "punc") # "unicode cjk Punctuation"
 
-    if float(cn_punc)/cn_length < 0.05:
-        return True
-    return False
+    if en_length == 0:
+        en_div = 0
+    return float(cn_punc)/cn_length, en_div #0.05
 
 def lcs_info(text):
     suffix = comm.suffix_array(text)
@@ -61,11 +59,7 @@ def findPart(regex, text, dec_type):
 
 # spam check
 def spam_check(string_content):
-    print "spam is checking..."
-    print repeat_content(string_content)
-    print break_check(string_content)
-    print lcs_info(string_content)
-    print "spam checking done..."
+    return repeat_content(string_content), break_check(string_content), lcs_info(string_content)
 
 # blacklist check
 def blacklist_check(v_list, n_list, string_content):
