@@ -58,11 +58,14 @@ def findPart(regex, text, dec_type):
             punc_length_all += len(i)
         return punc_length_all
 
-#get each language parts:
+# spam check
 def spam_check(string_content):
     print repeat_content(string_content)
     print break_check(string_content)
     print lcs_info(string_content)
 
-def blacklist_check(string_content):
+# blacklist check
+def blacklist_check(check_list, string_content):
     pass
+
+
