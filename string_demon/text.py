@@ -3,6 +3,7 @@
 
 import regex as re
 import commons as comm
+from wu_manber import WuManber
 
 # Chinese repeation
 def repeat_content(text):
@@ -60,12 +61,30 @@ def findPart(regex, text, dec_type):
 
 # spam check
 def spam_check(string_content):
+    print "spam is checking..."
     print repeat_content(string_content)
     print break_check(string_content)
     print lcs_info(string_content)
+    print "spam checking done..."
 
 # blacklist check
-def blacklist_check(check_list, string_content):
-    pass
-
-
+def blacklist_check(v_list, n_list, string_content):
+    length = len(string_content)
+    w_v = WuManber()
+    w_v.InitPattern(v_list)
+    _, ix_verb = w_v.Search(string_content)
+    if ix_verb:
+        w_n = WuManber()
+        w_n.InitPattern(n_list)
+        _, ix_noun = w_n.Search(string_content)
+        if ix_noun:
+            def get_min_distance():
+                temp = length
+                for i in ix_verb:
+                    for j in ix_noun:
+                        temp = min(temp, abs(i-j))
+                return temp
+            return [get_min_distance(),
+                    length,
+                    len(ix_noun),
+                    len(ix_verb)]

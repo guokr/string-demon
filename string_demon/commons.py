@@ -123,7 +123,3 @@ def print_maximal_phrases(suffix, lcp, count, text):
         if count[j] != 0 and lcp[j] <= lcp[i]:
             print '%d\t%d\t%s' % (count[i], wcount(w), q(w))
             prev = w
-
-def foo():
-    return "this is a try"
-
