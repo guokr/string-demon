@@ -61,11 +61,9 @@ def findPart(regex, text, dec_type):
 
 # spam check
 def spam_check(string_content):
-    print "spam is checking..."
     print repeat_content(string_content)
     print break_check(string_content)
     print lcs_info(string_content)
-    print "spam checking done..."
 
 # blacklist check
 def blacklist_check(v_list, n_list, string_content):
