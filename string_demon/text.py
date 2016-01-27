@@ -28,7 +28,7 @@ def break_check(text):
     en_div = float(en_length) / (en_breaks+1)
     cn_div = float(cn_length) / (cn_punc+en_breaks+0.001)
     return cn_div, en_div
-
+# lcs
 def lcs_info(text):
     suffix = comm.suffix_array(text)
     lcp = comm.longest_common_prefix(suffix, text)
