@@ -23,7 +23,11 @@ def break_check(text):
 
     if en_length == 0:
         en_div = 0
-    return float(cn_punc)/cn_length, en_div #0.05
+    if cn_length == 0:
+        cn_div = 0
+    en_div = float(en_length) / (en_breaks+1)
+    cn_div = float(cn_length) / (cn_punc+en_breaks+0.001)
+    return cn_div, en_div
 
 def lcs_info(text):
     suffix = comm.suffix_array(text)
@@ -54,7 +58,7 @@ def findPart(regex, text, dec_type):
     elif dec_type == "punc":
         punc_length_all = 0
         for i in res:
-            punc_length_all += len(i)
+            punc_length_all += 1
         return punc_length_all
 
 # spam check

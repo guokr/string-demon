@@ -5,7 +5,7 @@ def readme():
         return f.read()
 
 setup(name='string_demon',
-      version='0.2',
+      version='0.2.1',
       description='String Feature Extraction',
       url='http://github.com/guokr/string-demon',
       author='Jinyang Zhou',
