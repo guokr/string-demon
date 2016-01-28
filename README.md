@@ -6,7 +6,6 @@ sample:
 import string_demon as sd
 
 str1 = "我住在北方，夜晚听见窗外的雨声，让我想起了南方。May the force be with you....""
-str2 = "
 
 print sd.spam_check(str1)
 ```
