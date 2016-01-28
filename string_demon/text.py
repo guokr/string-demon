@@ -27,16 +27,16 @@ def break_check(text):
 
 
     if en_length == 0:
-        en_div, en_cn_ratio = 0, 0
+        en_div, cn_en_ratio = 0, 1
     elif cn_length == 0:
-        cn_div, en_cn_ratio = 0, 0
+        cn_div, cn_en_ratio = 0, 0
     else:
-        en_cn_ratio = float(cn_length)/en_length
+        cn_en_ratio = float(cn_length)/en_length
 
 
     en_div = float(en_length) / (en_breaks+1)
     cn_div = float(cn_length) / (cn_punc+en_breaks+0.001)
-    return cn_repeat, cn_div, en_div, en_cn_ratio
+    return cn_repeat, cn_div, en_div, cn_en_ratio
 # lcs
 def lcs_info(text):
     suffix = comm.suffix_array(text)
@@ -73,7 +73,10 @@ def findPart(regex, text, dec_type):
 
 # spam check
 def spam_check(string_content):
-    return break_check(string_content), lcs_info(string_content)
+    return break_check(string_content)
+
+def lcs_check(string_content):
+    return lcs_info(string_content)
 
 # blacklist check
 def blacklist_check(v_list, n_list, string_content):
