@@ -6,28 +6,37 @@ import commons as comm
 from wu_manber import WuManber
 
 # Chinese repeation
-def repeat_content(text):
-    que = list(text)
-    return float(len(set(que)))/len(que) #0.35
+def repeat_content(text_list):
+    text = ""
+    for ele in text_list:
+        text += ele
+
+    #  que = list(text)
+    return float(len(set(text)))/len(text) #0.35
 
 # Chinese & English break
 def break_check(text):
     text = unicode(text,'utf8')
 
     en_length, en_breaks = findPart(u"[\u0001-\u007F]+", text, "en") # "acsii"
-    cn_length = findPart(u"[\u4e00-\u9fa5]+", text, "cn") # "unicode chinese"
+    cn_length, cn_repeat = findPart(u"[\u4e00-\u9fa5]+", text, "cn") # "unicode chinese"
     #  print findPart(u"[\uac00-\ud7ff]+", text) # "unicode korean"
     #  print findPart(u"[\u30a0-\u30ff]+", text) # "unicode japanese katakana"
     #  findPart(u"[\u3040-\u309f]+", usample) # "unicode japanese hiragana"
     cn_punc = findPart(u"[\u3000-\u303f\ufb00-\ufffd]+", text, "punc") # "unicode cjk Punctuation"
 
+
     if en_length == 0:
-        en_div = 0
-    if cn_length == 0:
-        cn_div = 0
+        en_div, en_cn_ratio = 0, 0
+    elif cn_length == 0:
+        cn_div, en_cn_ratio = 0, 0
+    else:
+        en_cn_ratio = float(cn_length)/en_length
+
+
     en_div = float(en_length) / (en_breaks+1)
     cn_div = float(cn_length) / (cn_punc+en_breaks+0.001)
-    return cn_div, en_div
+    return cn_repeat, cn_div, en_div, en_cn_ratio
 # lcs
 def lcs_info(text):
     suffix = comm.suffix_array(text)
@@ -50,10 +59,11 @@ def findPart(regex, text, dec_type):
         return text_length_all, break_times
 
     elif dec_type == "cn":
+        #  print repeat_content(res)
         text_length_all = 0
         for i in res:
             text_length_all += len(i)
-        return text_length_all
+        return text_length_all, repeat_content(res)
 
     elif dec_type == "punc":
         punc_length_all = 0
@@ -63,7 +73,7 @@ def findPart(regex, text, dec_type):
 
 # spam check
 def spam_check(string_content):
-    return repeat_content(string_content), break_check(string_content), lcs_info(string_content)
+    return break_check(string_content), lcs_info(string_content)
 
 # blacklist check
 def blacklist_check(v_list, n_list, string_content):
