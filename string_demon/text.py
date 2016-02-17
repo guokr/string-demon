@@ -4,6 +4,7 @@
 import regex as re
 import commons as comm
 from wu_manber import WuManber
+from helpers import smart_unicode
 
 # Chinese repeation
 def repeat_content(text_list):
@@ -16,7 +17,7 @@ def repeat_content(text_list):
 
 # Chinese & English break
 def break_check(text):
-    text = unicode(text,'utf8')
+    text = smart_unicode(text)
 
     en_length, en_breaks = findPart(u"[\u0001-\u007F]+", text, "en") # "acsii"
     cn_length, cn_repeat = findPart(u"[\u4e00-\u9fa5]+", text, "cn") # "unicode chinese"
