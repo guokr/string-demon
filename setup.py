@@ -16,5 +16,5 @@ setup(
     license='MIT',
     packages=['string_demon'],
     zip_safe=False,
-    install_requires=['regex==2016.01.10']
+    install_requires=['regex==2016.01.10', 'six==1.10.0'],
 )
