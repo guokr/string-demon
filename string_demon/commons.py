@@ -3,15 +3,15 @@
 
 
 def suffix_array(text):
-    suffix = [0] * len(text)
+    suffix = []
     for i in xrange(len(text)):
-        suffix[i] = text[i:]
+        suffix.append(text[i:])
     suffix.sort()
     return suffix
 
 
 def longest_common_prefix(suffix, text):
-    lcp = [0] * len(suffix)
+    lcp = []
     previous = ""
     for i in xrange(len(text)):
         count = 0
@@ -21,11 +21,12 @@ def longest_common_prefix(suffix, text):
         for j in xrange(max_count):
             if current[j] != previous[j]:
                 break
-            count +=1
+            count += 1
 
-        lcp[i] = count
+        lcp.append(count)
         previous = current
     return lcp
+
 
 def leftmost(A, W):
     length = len(W)
@@ -97,7 +98,8 @@ def left_maximal(text, suffix, W1):
 
 
 def q(s):
-    return "'" + s + "'"
+    return "'%s'" % s
+
 
 def wcount(text):
     "returns the number of words"
