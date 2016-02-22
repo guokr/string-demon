@@ -4,5 +4,6 @@ setup.cfg
 setup.py
 string_demon/__init__.py
 string_demon/commons.py
+string_demon/helpers.py
 string_demon/text.py
 string_demon/wu_manber.py
