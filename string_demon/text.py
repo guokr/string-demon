@@ -5,6 +5,7 @@ import regex as re
 import commons as comm
 from wu_manber import WuManber
 from helpers import smart_unicode
+from extract import extract
 
 
 # Chinese repeation
@@ -38,6 +39,7 @@ def break_check(text):
 
     en_div = float(en_length) / (en_breaks+1)
     cn_div = float(cn_length) / (cn_punc+en_breaks+0.001)
+
     return cn_repeat, cn_div, en_div, cn_en_ratio
 
 
@@ -48,7 +50,9 @@ def lcs_info(text):
     count = comm.suffix_counts(suffix, lcp)
     max_lcp, i = comm.max_value_and_index(lcp)
     phrase = suffix[i][:lcp[i]]
-    return count[i], phrase, len(phrase)/3
+    has_contact= extract('all', text)
+
+    return count[i], phrase, len(phrase)/3, float(len(phrase)/3)/len(text), has_contact
 
 
 def findPart(regex, text, dec_type):
@@ -59,8 +63,10 @@ def findPart(regex, text, dec_type):
         for i in res:
             text_length_all += len(i)
             for j in i:
-                if j == ' ':
+                # if j == u',' or u'.':
+                if j == ' ' or j == ',' or j == '.':
                     break_times += 1
+                    text_length_all -= 1
         return text_length_all, break_times
 
     elif dec_type == "cn":
