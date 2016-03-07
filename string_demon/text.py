@@ -18,11 +18,11 @@ def repeat_content(text_list):
         return 1.0
     return float(len(set(text)))/len(text)  # 0.35
 
-
 # Chinese & English break
 def break_check(text):
     text = smart_unicode(text)
-
+    breaks = findPart(u"[\u0001-\u002F\u003A-\u0040\u005B-\u0060\u007B-\u007E\u2997-\u303f\ufb00-\ufffd]+", text, "break")
+    breaks_1 = len(breaks)
     en_length, en_breaks = findPart(u"[\u0001-\u007F]+", text, "en")  # "acsii"
     cn_length, cn_repeat = findPart(u"[\u4e00-\u9fa5]+", text, "cn")  # "unicode chinese"
     #  print findPart(u"[\uac00-\ud7ff]+", text) # "unicode korean"
@@ -37,11 +37,14 @@ def break_check(text):
     else:
         cn_en_ratio = float(cn_length)/en_length
 
+
     en_div = float(en_length) / (en_breaks+1)
-    cn_div = float(cn_length) / (cn_punc+en_breaks+0.001)
+    # cn_div = float(cn_length) / (cn_punc+en_breaks+0.001)
+    cn_div = float(cn_length) / breaks_1
 
+    print breaks
+    print len(text) / float(cn_div)
     return cn_repeat, cn_div, en_div, cn_en_ratio
-
 
 # lcs
 def lcs_info(text):
@@ -81,6 +84,8 @@ def findPart(regex, text, dec_type):
         for i in res:
             punc_length_all += 1
         return punc_length_all
+    elif dec_type == "break":
+        return res
 
 
 # spam check
