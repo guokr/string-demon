@@ -7,7 +7,6 @@ from wu_manber import WuManber
 from helpers import smart_unicode
 from extract import extract
 
-
 # Chinese repeation
 def repeat_content(text_list):
     text = ""
@@ -18,17 +17,18 @@ def repeat_content(text_list):
         return 1.0
     return float(len(set(text)))/len(text)  # 0.35
 
+
 # Chinese & English break
 def break_check(text):
     text = smart_unicode(text)
-    breaks = findPart(u"[\u0001-\u002F\u003A-\u0040\u005B-\u0060\u007B-\u007E\u2997-\u303f\ufb00-\ufffd]+", text, "break")
-    breaks_1 = len(breaks)
+    breaks = findPart(u"[\u0001-\u002F\u003A-\u0040\u005B-\u0060\u007B-\u007E\u2997-\u303f\ufb00-\ufffd\/n]+", text, "break")
+    breaks_nt = findPart(u"[/n/t]+", text, "nt")
     en_length, en_breaks = findPart(u"[\u0001-\u007F]+", text, "en")  # "acsii"
     cn_length, cn_repeat = findPart(u"[\u4e00-\u9fa5]+", text, "cn")  # "unicode chinese"
     #  print findPart(u"[\uac00-\ud7ff]+", text) # "unicode korean"
     #  print findPart(u"[\u30a0-\u30ff]+", text) # "unicode japanese katakana"
     #  findPart(u"[\u3040-\u309f]+", usample) # "unicode japanese hiragana"
-    cn_punc = findPart(u"[\u2997-\u303f\ufb00-\ufffd]+", text, "punc")  # "unicode cjk Punctuation"
+    # cn_punc = findPart(u"[\u2997-\u303f\ufb00-\ufffd]+", text, "punc")  # "unicode cjk Punctuation"
 
     if en_length == 0:
         en_div, cn_en_ratio = 0, 1
@@ -37,13 +37,11 @@ def break_check(text):
     else:
         cn_en_ratio = float(cn_length)/en_length
 
-
     en_div = float(en_length) / (en_breaks+1)
     # cn_div = float(cn_length) / (cn_punc+en_breaks+0.001)
-    cn_div = float(cn_length) / breaks_1
+    cn_div = float(cn_length) / len(breaks+breaks_nt)
 
-    print breaks
-    print len(text) / float(cn_div)
+    # print len(text) / float(cn_div)
     return cn_repeat, cn_div, en_div, cn_en_ratio
 
 # lcs
@@ -53,9 +51,15 @@ def lcs_info(text):
     count = comm.suffix_counts(suffix, lcp)
     max_lcp, i = comm.max_value_and_index(lcp)
     phrase = suffix[i][:lcp[i]]
-    has_contact= extract('all', text)
+    has_contact = False
+    if len(extract('qq', text)[0]) != 0 or len(extract('phone', text)[0]) != 0:
+        has_contact = True
+    elif len(extract('url', text)[0]) != 0:
+        text = extract('url', text)[1]
+    elif len(extract('email', text)[0]) != 0:
+        text = extract('email', text)[1]
 
-    return count[i], phrase, len(phrase)/3, float(len(phrase)/3)/len(text), has_contact
+    return count[i], phrase, len(phrase)/3, float(len(phrase)/3)/len(text), has_contact, text
 
 
 def findPart(regex, text, dec_type):
@@ -85,6 +89,8 @@ def findPart(regex, text, dec_type):
             punc_length_all += 1
         return punc_length_all
     elif dec_type == "break":
+        return res
+    elif dec_type == "nt":
         return res
 
 

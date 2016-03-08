@@ -16,11 +16,10 @@ cn_phone_regex = re.compile('((\d{11})|^((\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4
 cn_400_1_regex= re.compile('\d{4}[-]{0,1}\d{3}[-]{0,1}\d{3}')
 cn_400_2_regex= re.compile('\d{3}[-]{0,1}\d{3}[-]{0,1}\d{4}')
 # QQ_reg
-qq_regex = re.compile(r'[Q]{0,2}\s{0,}[:]{0,}[：]{0,}[0-9]{8,13}', re.IGNORECASE)
+qq_regex = re.compile(r'[Q]{0,2}\s{0,}[:]{1,}[：]{1,}[0-9]{8,13}', re.IGNORECASE)
 
 
 # A convenient enum for the type of data that can be extracted
-
 
 def extract(type, data):
     if (type == "all"):
@@ -42,29 +41,28 @@ def extract(type, data):
             return False
 
     if (type == "email"):
-        extracted_data = extract_emails(data)
-        print '%d emails extracted to .csv' % len(extracted_data)
+        return extract_emails(data)
+        # print '%d emails extracted to .csv' % len(extracted_data)
 
     if (type == "url"):
-        extracted_data = extract_urls(data)
-        print '%d URLs extracted to .csv' % len(extracted_data)
+        return extract_urls(data)
+        # print '%d URLs extracted to .csv' % len(extracted_data)
 
     if (type == "domain"):
-        extracted_data = extract_domains(data)
-        print '%d domains extracted to .csv' % len(extracted_data)
+        extract_domains(data)
+        # print '%d domains extracted to .csv' % len(extracted_data)
 
     if (type == "mobile"):
-        extracted_data = extract_cn_mobile(data)
-        print '%d mobile numbers extracted to .csv' % len(extracted_data)
+        return extract_cn_mobile(data)
+        # print '%d mobile numbers extracted to .csv' % len(extracted_data)
 
     if (type == "qq"):
-        extracted_data = extract_qq(data)
-        print extracted_data
-        print '%d qq numbers extracted to .csv' % len(extracted_data)
+        return extract_qq(data)
+        # print '%d qq numbers extracted to .csv' % len(extracted_data)
 
     if (type == "phone"):
-        extracted_data = extract_phone(data)
-        print extracted_data
+        return extract_phone(data)
+        # print extracted_data
 
     # Write to the file
     # eg. filename - email.csv
