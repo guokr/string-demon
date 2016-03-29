@@ -21,10 +21,13 @@ def repeat_content(text_list):
 # Chinese & English break
 def break_check(text):
     text = smart_unicode(text)
+    # text = unicode(text, "utf-8")
+    # text = text.encode('unicode_escape')
+
     breaks = findPart(u"[\u0001-\u002F\u003A-\u0040\u005B-\u0060\u007B-\u007E\u2997-\u303f\ufb00-\ufffd\/n]+", text, "break")
     breaks_nt = findPart(u"[/n/t]+", text, "nt")
     en_length, en_breaks = findPart(u"[\u0001-\u007F]+", text, "en")  # "acsii"
-    cn_length, cn_repeat = findPart(u"[\u4e00-\u9fa5]+", text, "cn")  # "unicode chinese"
+    cn_length, cn_repeat = findPart(u"[\u4e00-\u9fa5\U0001F600-\U0001F64F]+", text, "cn")  # "unicode chinese"
     #  print findPart(u"[\uac00-\ud7ff]+", text) # "unicode korean"
     #  print findPart(u"[\u30a0-\u30ff]+", text) # "unicode japanese katakana"
     #  findPart(u"[\u3040-\u309f]+", usample) # "unicode japanese hiragana"
@@ -52,12 +55,19 @@ def lcs_info(text):
     max_lcp, i = comm.max_value_and_index(lcp)
     phrase = suffix[i][:lcp[i]]
     has_contact = False
+    print type(extract('qq', text))
     if len(extract('qq', text)[0]) != 0 or len(extract('phone', text)[0]) != 0:
         has_contact = True
+        print "qq"
     elif len(extract('url', text)[0]) != 0:
         text = extract('url', text)[1]
+        print "url"
     elif len(extract('email', text)[0]) != 0:
         text = extract('email', text)[1]
+        print "email"
+    elif len(extract('wechat', text)[0]) != 0:
+        text = extract('wechat', text)[1]
+        print "wechat"
 
     return count[i], phrase, len(phrase)/3, float(len(phrase)/3)/len(text), has_contact, text
 
@@ -77,6 +87,7 @@ def findPart(regex, text, dec_type):
         return text_length_all, break_times
 
     elif dec_type == "cn":
+        print res
         #  print repeat_content(res)
         text_length_all = 0
         for i in res:
@@ -98,10 +109,8 @@ def findPart(regex, text, dec_type):
 def spam_check(string_content):
     return break_check(string_content)
 
-
 def lcs_check(string_content):
     return lcs_info(string_content)
-
 
 # blacklist check
 def blacklist_check(v_list, n_list, string_content):

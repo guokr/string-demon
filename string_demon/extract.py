@@ -17,9 +17,10 @@ cn_400_1_regex= re.compile('\d{4}[-]{0,1}\d{3}[-]{0,1}\d{3}')
 cn_400_2_regex= re.compile('\d{3}[-]{0,1}\d{3}[-]{0,1}\d{4}')
 # QQ_reg
 qq_regex = re.compile(r'[Q]{0,2}\s{0,}[:]{1,}[：]{1,}[0-9]{8,13}', re.IGNORECASE)
-
+wechat_regex = re.compile(r'[a-zA-Z]{1}[-_a-zA-Z0-9]{5,19}', re.IGNORECASE)
 
 # A convenient enum for the type of data that can be extracted
+
 
 def extract(type, data):
     if (type == "all"):
@@ -42,52 +43,36 @@ def extract(type, data):
 
     if (type == "email"):
         return extract_emails(data)
-        # print '%d emails extracted to .csv' % len(extracted_data)
+
+    if (type == "wechat"):
+        return extract_wechat(data)
 
     if (type == "url"):
         return extract_urls(data)
-        # print '%d URLs extracted to .csv' % len(extracted_data)
 
     if (type == "domain"):
         extract_domains(data)
-        # print '%d domains extracted to .csv' % len(extracted_data)
 
     if (type == "mobile"):
         return extract_cn_mobile(data)
-        # print '%d mobile numbers extracted to .csv' % len(extracted_data)
 
     if (type == "qq"):
         return extract_qq(data)
-        # print '%d qq numbers extracted to .csv' % len(extracted_data)
 
     if (type == "phone"):
         return extract_phone(data)
-        # print extracted_data
 
-    # Write to the file
-    # eg. filename - email.csv
-    # out_filename = in_filename.split('.')[0] + ' - ' + type + '.csv'
-
-
-
-#    if len(extracted_data_set) != 0:
-#        print "YES"
-#        print extracted_data_set
-#    else:
-#        pass
-
-#    filename = 'output.csv'
-#    with open(filename, 'a') as myfile:
-#        myfile.write("\n".join(list(extracted_data_set)))
-
-#    print extracted_data_list
-#    file = open(out_filename, "w+")
-#    file.writelines("\n".join(list(extracted_data_list)))
-#    file.close()
 def cleanup_for_emails(data):
     data = re.sub('\s*[[(</-]?\s*(?: at |@)\s*[])>/-]?\s*', '@', data)
     data = re.sub('\s*[[(</-]?\s*(?:dot|\.)\s*[])>/-]?\s*', '.', data)
     return data
+
+def extract_wechat(data):
+    spam_wechat_list = []
+    for qq in wechat_regex.findall(data):
+        spam_wechat_list.append(qq)
+        data = data.replace(qq, '')
+    return [spam_wechat_list, data]
 
 
 def extract_emails(data):
@@ -112,7 +97,7 @@ def extract_phone(data):
     for z in cn_400_2_regex.findall(data):
         spam_phone_list.append(z)
         data = data.replace(z[0], '')
-    return spam_phone_list, data
+    return [spam_phone_list, data]
 
 
 def extract_urls(data):
@@ -120,7 +105,7 @@ def extract_urls(data):
     for x in url_regex.findall(data):
         spam_url_list.append(x)
         data = data.replace(x, '')
-    return spam_url_list, data
+    return [spam_url_list, data]
 
 
 def extract_domains(data):
@@ -141,7 +126,7 @@ def extract_qq(data):
     for qq in qq_regex.findall(data):
         spam_qq_list.append(qq)
         data = data.replace(qq, '')
-    return spam_qq_list, data
+    return [spam_qq_list, data]
 
 
 def extract_cn_mobile(data):
